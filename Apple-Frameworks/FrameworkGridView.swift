@@ -8,7 +8,10 @@
 import SwiftUI
 
 struct FrameworkGridView: View {
-    var columns: [GridItem] = [GridItem(.flexible()),GridItem(.flexible()),GridItem(.flexible())]
+    
+    var columns: [GridItem] = [GridItem(.flexible()),
+                               GridItem(.flexible()),
+                               GridItem(.flexible())]
     var body: some View {
         
         NavigationStack{
@@ -23,7 +26,6 @@ struct FrameworkGridView: View {
                 }
             }
             .navigationTitle("Apple Frameworks")
-            
         }
        }
 }
@@ -34,6 +36,7 @@ struct FrameworkGridView: View {
 
 struct FrameworkView: View {
 
+    @StateObject var viewModel = FrameworkGridViewModel()
     let framework: Framework
     
     var body: some View {
@@ -42,7 +45,7 @@ struct FrameworkView: View {
             Image(framework.imageName)
                 .renderingMode(.original)
                 .resizable()
-                .frame(width: 125, height: 125)
+                .frame(width: 100, height: 100)
             Text(framework.name)
                 .foregroundStyle(.white)
                 .font(.title2)
@@ -50,7 +53,16 @@ struct FrameworkView: View {
                 .minimumScaleFactor(0.6)
                 .bold()
         }
+        .onTapGesture {
+            viewModel.selectedFramework = framework
+        }
         .padding(10)
-        
+        .sheet(isPresented: $viewModel.isDetailViewShowing) {
+            FrameworkDetailView(framework: framework, 
+                                isShowingDetailView: $viewModel.isDetailViewShowing)
+        }
     }
-}
+        
+
+    }
+
